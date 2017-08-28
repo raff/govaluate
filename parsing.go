@@ -139,7 +139,7 @@ func readToken(stream *lexerStream, state lexerState, functions map[string]Expre
 		}
 
 		// regular variable - or function?
-		if unicode.IsLetter(character) {
+		if unicode.IsLetter(character) || character == '$' {
 
 			tokenString = readTokenUntilFalse(stream, isVariableName)
 
@@ -275,6 +275,13 @@ func readToken(stream *lexerStream, state lexerState, functions map[string]Expre
 		if found {
 
 			kind = TERNARY
+			break
+		}
+
+		_, found = assignmentSymbols[tokenString]
+		if found {
+
+			kind = ASSIGNMENT
 			break
 		}
 
@@ -456,6 +463,7 @@ func isVariableName(character rune) bool {
 
 	return unicode.IsLetter(character) ||
 		unicode.IsDigit(character) ||
+		character == '$' ||
 		character == '_' ||
 		character == '.'
 }

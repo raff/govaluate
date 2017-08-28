@@ -165,6 +165,7 @@ var validLexerStates = []lexerState{
 			CLAUSE_CLOSE,
 			TERNARY,
 			SEPARATOR,
+			ASSIGNMENT,
 		},
 	},
 	lexerState{
@@ -300,6 +301,25 @@ var validLexerStates = []lexerState{
 			FUNCTION,
 			ACCESSOR,
 			CLAUSE,
+		},
+	},
+	lexerState{
+
+		kind:       ASSIGNMENT,
+		isEOF:      false,
+		isNullable: true,
+		validNextKinds: []TokenKind{
+
+			PREFIX,
+			NUMERIC,
+			BOOLEAN,
+			STRING,
+			TIME,
+			VARIABLE,
+			FUNCTION,
+			ACCESSOR,
+			CLAUSE,
+			CLAUSE_CLOSE,
 		},
 	},
 }

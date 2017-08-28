@@ -46,12 +46,14 @@ const (
 	FUNCTIONAL
 	ACCESS
 	SEPARATE
+	ASSIGN
 )
 
 type operatorPrecedence int
 
 const (
 	noopPrecedence operatorPrecedence = iota
+	assignPrecedence
 	valuePrecedence
 	functionalPrecedence
 	prefixPrecedence
@@ -136,6 +138,8 @@ func findOperatorPrecedenceForSymbol(symbol OperatorSymbol) operatorPrecedence {
 		return functionalPrecedence
 	case SEPARATE:
 		return separatePrecedence
+	case ASSIGN:
+		return assignPrecedence
 	}
 
 	return valuePrecedence
@@ -220,6 +224,10 @@ var separatorSymbols = map[string]OperatorSymbol{
 	",": SEPARATE,
 }
 
+var assignmentSymbols = map[string]OperatorSymbol{
+	"=": ASSIGN,
+}
+
 /*
 	Returns true if this operator is contained by the given array of candidate symbols.
 	False otherwise.
@@ -249,7 +257,7 @@ func (this OperatorSymbol) String() string {
 	case VALUE:
 		return "VALUE"
 	case EQ:
-		return "="
+		return "=="
 	case NEQ:
 		return "!="
 	case GT:
@@ -304,6 +312,8 @@ func (this OperatorSymbol) String() string {
 		return ":"
 	case COALESCE:
 		return "??"
+	case ASSIGN:
+		return "="
 	}
 	return ""
 }

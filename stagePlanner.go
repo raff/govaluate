@@ -413,6 +413,12 @@ func planValue(stream *tokenStream) (*evaluationStage, error) {
 		return nil, nil
 
 	case VARIABLE:
+		if stream.hasNext() {
+			op, err := planAssignment(stream, token)
+			if op != nil || err != nil {
+				return op, err
+			}
+		}
 		operator = makeParameterStage(token.Value.(string))
 
 	case NUMERIC:
@@ -441,6 +447,33 @@ func planValue(stream *tokenStream) (*evaluationStage, error) {
 	return &evaluationStage{
 		symbol:   symbol,
 		operator: operator,
+	}, nil
+}
+
+func planAssignment(stream *tokenStream, param ExpressionToken) (*evaluationStage, error) {
+
+	var token ExpressionToken
+	var rightStage *evaluationStage
+	var err error
+
+	token = stream.next()
+
+	if token.Kind != ASSIGNMENT {
+		stream.rewind()
+		return nil, nil
+	}
+
+	rightStage, err = planTokens(stream)
+	if err != nil {
+		return nil, err
+	}
+
+	return &evaluationStage{
+
+		symbol:          ASSIGN,
+		rightStage:      rightStage,
+		operator:        makeAssignmentStage(param.Value.(string)),
+		typeErrorFormat: "Unable to run function '%v': %v",
 	}, nil
 }
 

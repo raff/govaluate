@@ -27,6 +27,8 @@ const (
 	CLAUSE_CLOSE
 
 	TERNARY
+
+	ASSIGNMENT
 )
 
 /*
@@ -69,6 +71,8 @@ func (kind TokenKind) String() string {
 		return "TERNARY"
 	case ACCESSOR:
 		return "ACCESSOR"
+	case ASSIGNMENT:
+		return "ASSIGNMENT"
 	}
 
 	return "UNKNOWN"

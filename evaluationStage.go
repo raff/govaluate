@@ -42,6 +42,16 @@ type evaluationStage struct {
 	typeErrorFormat string
 }
 
+func (this *evaluationStage) String() string {
+	if this == nil {
+		return "[]"
+	}
+
+	return "[" + this.leftStage.String() +
+		" " + this.symbol.String() + " " +
+		this.rightStage.String() + "]"
+}
+
 var (
 	_true  = interface{}(true)
 	_false = interface{}(false)
@@ -221,6 +231,14 @@ func makeParameterStage(parameterName string) evaluationOperator {
 		}
 
 		return value, nil
+	}
+}
+
+func makeAssignmentStage(parameterName string) evaluationOperator {
+
+	return func(left interface{}, right interface{}, parameters Parameters) (interface{}, error) {
+		err := parameters.Set(parameterName, right)
+		return right, err
 	}
 }
 

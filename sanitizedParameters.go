@@ -16,6 +16,10 @@ func (p sanitizedParameters) Get(key string) (interface{}, error) {
 	return castFixedPoint(value), nil
 }
 
+func (p sanitizedParameters) Set(key string, value interface{}) error {
+	return p.orig.Set(key, value)
+}
+
 func isFixedPoint(value interface{}) bool {
 
 	switch value.(type) {
