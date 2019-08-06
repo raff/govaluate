@@ -234,12 +234,73 @@ func makeParameterStage(parameterName string) evaluationOperator {
 	}
 }
 
-func makeAssignmentStage(parameterName string) evaluationOperator {
+func makeAssignmentStage(op OperatorSymbol, parameterName string) evaluationOperator {
 
-	return func(left interface{}, right interface{}, parameters Parameters) (interface{}, error) {
-		err := parameters.Set(parameterName, right)
-		return right, err
+	switch op {
+	case ASSIGN:
+		return func(left interface{}, right interface{}, parameters Parameters) (interface{}, error) {
+			return right, parameters.Set(parameterName, right)
+		}
+	case ASSIGN_ADD:
+		return func(left interface{}, right interface{}, parameters Parameters) (interface{}, error) {
+			value, err := parameters.Get(parameterName)
+			if err != nil {
+				return nil, err
+			}
+
+			res, err := addStage(value, right, parameters)
+			if err != nil {
+				return nil, err
+			}
+
+			return res, parameters.Set(parameterName, res)
+		}
+	case ASSIGN_SUB:
+		return func(left interface{}, right interface{}, parameters Parameters) (interface{}, error) {
+			value, err := parameters.Get(parameterName)
+			if err != nil {
+				return nil, err
+			}
+
+			res, err := subtractStage(value, right, parameters)
+			if err != nil {
+				return nil, err
+			}
+
+			return res, parameters.Set(parameterName, res)
+		}
+	case ASSIGN_MUL:
+		return func(left interface{}, right interface{}, parameters Parameters) (interface{}, error) {
+			value, err := parameters.Get(parameterName)
+			if err != nil {
+				return nil, err
+			}
+
+			res, err := multiplyStage(value, right, parameters)
+			if err != nil {
+				return nil, err
+			}
+
+			return res, parameters.Set(parameterName, res)
+		}
+	case ASSIGN_DIV:
+		return func(left interface{}, right interface{}, parameters Parameters) (interface{}, error) {
+			value, err := parameters.Get(parameterName)
+			if err != nil {
+				return nil, err
+			}
+
+			res, err := divideStage(value, right, parameters)
+			if err != nil {
+				return nil, err
+			}
+
+			return res, parameters.Set(parameterName, res)
+		}
 	}
+
+	// shouldn't happen
+	return nil
 }
 
 func makeLiteralStage(literal interface{}) evaluationOperator {

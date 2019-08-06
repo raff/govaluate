@@ -468,11 +468,13 @@ func planAssignment(stream *tokenStream, param ExpressionToken) (*evaluationStag
 		return nil, err
 	}
 
+	symbol := assignmentSymbols[token.Value.(string)]
+
 	return &evaluationStage{
 
-		symbol:          ASSIGN,
+		symbol:          symbol,
 		rightStage:      rightStage,
-		operator:        makeAssignmentStage(param.Value.(string)),
+		operator:        makeAssignmentStage(symbol, param.Value.(string)),
 		typeErrorFormat: "Unable to run function '%v': %v",
 	}, nil
 }

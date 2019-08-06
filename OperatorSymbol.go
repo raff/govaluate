@@ -47,6 +47,10 @@ const (
 	ACCESS
 	SEPARATE
 	ASSIGN
+	ASSIGN_ADD
+	ASSIGN_SUB
+	ASSIGN_MUL
+	ASSIGN_DIV
 )
 
 type operatorPrecedence int
@@ -138,6 +142,14 @@ func findOperatorPrecedenceForSymbol(symbol OperatorSymbol) operatorPrecedence {
 		return functionalPrecedence
 	case SEPARATE:
 		return separatePrecedence
+	case ASSIGN_ADD:
+		fallthrough
+	case ASSIGN_SUB:
+		fallthrough
+	case ASSIGN_MUL:
+		fallthrough
+	case ASSIGN_DIV:
+		fallthrough
 	case ASSIGN:
 		return assignPrecedence
 	}
@@ -225,7 +237,11 @@ var separatorSymbols = map[string]OperatorSymbol{
 }
 
 var assignmentSymbols = map[string]OperatorSymbol{
-	"=": ASSIGN,
+	"=":  ASSIGN,
+	"+=": ASSIGN_ADD,
+	"-=": ASSIGN_SUB,
+	"*=": ASSIGN_MUL,
+	"/=": ASSIGN_DIV,
 }
 
 /*
@@ -314,6 +330,14 @@ func (this OperatorSymbol) String() string {
 		return "??"
 	case ASSIGN:
 		return "="
+	case ASSIGN_ADD:
+		return "+="
+	case ASSIGN_SUB:
+		return "-="
+	case ASSIGN_MUL:
+		return "*="
+	case ASSIGN_DIV:
+		return "/="
 	}
 	return ""
 }
